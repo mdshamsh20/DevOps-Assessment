@@ -1,0 +1,16 @@
+aws_region                 = "us-east-1"
+environment                = "dev"
+vpc_cidr                   = "10.10.0.0/16"
+availability_zones         = ["us-east-1a", "us-east-1b"]
+nat_gateway_count          = 1
+container_image            = "nginx:1.27-alpine"
+task_cpu                   = 256
+task_memory                = 512
+desired_count              = 1
+db_instance_class          = "db.t4g.micro"
+db_allocated_storage       = 20
+db_backup_retention_period = 7
+db_deletion_protection     = false
+db_multi_az                = false
+db_name                    = "app"
+db_username                = "appadmin"

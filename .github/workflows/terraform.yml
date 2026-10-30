@@ -1,0 +1,38 @@
+name: Terraform
+
+on:
+  pull_request:
+    paths:
+      - "infra/**"
+      - ".github/workflows/terraform.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: testing
+      AWS_SECRET_ACCESS_KEY: testing
+      AWS_EC2_METADATA_DISABLED: "true"
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [dev, prod]
+    defaults:
+      run:
+        working-directory: infra/envs/${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+      - name: Check formatting
+        run: terraform fmt -check -recursive ../..
+      - name: Initialize
+        run: terraform init -input=false
+      - name: Validate
+        run: terraform validate
+      - name: Plan
+        run: terraform plan -input=false -refresh=false -var-file=terraform.tfvars
